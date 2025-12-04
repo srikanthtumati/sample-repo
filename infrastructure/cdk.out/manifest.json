@@ -1,0 +1,205 @@
+{
+  "version": "35.0.0",
+  "artifacts": {
+    "ApiStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ApiStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "ApiStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "ApiStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/886d7d5a0e43b937a8c6ef10e628f7688d68be3b79a4c3b260789e5d5b795e32.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "ApiStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "ApiStack.assets"
+      ],
+      "metadata": {
+        "/ApiStack/EventsTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "EventsTableD24865E5"
+            }
+          }
+        ],
+        "/ApiStack/EventsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsTableD24865E5"
+          }
+        ],
+        "/ApiStack/EventsApiLambda/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiLambdaServiceRoleA34D9763"
+          }
+        ],
+        "/ApiStack/EventsApiLambda/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiLambdaServiceRoleDefaultPolicyA2F8603C"
+          }
+        ],
+        "/ApiStack/EventsApiLambda/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiLambda2E7C390B"
+          }
+        ],
+        "/ApiStack/EventsApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiBA8771C4"
+          }
+        ],
+        "/ApiStack/EventsApi/CloudWatchRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiCloudWatchRoleD8FF2067"
+          }
+        ],
+        "/ApiStack/EventsApi/Account": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiAccountE911E9B2"
+          }
+        ],
+        "/ApiStack/EventsApi/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiDeployment6D3A8004927875b9003435604754575e2e1c8f81"
+          }
+        ],
+        "/ApiStack/EventsApi/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiDeploymentStageprodA51EE477"
+          }
+        ],
+        "/ApiStack/EventsApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiEndpoint08310F1D"
+          }
+        ],
+        "/ApiStack/EventsApi/Default/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiOPTIONS81D5437B"
+          }
+        ],
+        "/ApiStack/EventsApi/Default/{proxy+}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiproxyEBBDA8D5"
+          }
+        ],
+        "/ApiStack/EventsApi/Default/{proxy+}/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiproxyOPTIONS37CF2C9B"
+          }
+        ],
+        "/ApiStack/EventsApi/Default/{proxy+}/ANY/ApiPermission.ApiStackEventsApiBA7F1B0E.ANY..{proxy+}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiproxyANYApiPermissionApiStackEventsApiBA7F1B0EANYproxy472F0748"
+          }
+        ],
+        "/ApiStack/EventsApi/Default/{proxy+}/ANY/ApiPermission.Test.ApiStackEventsApiBA7F1B0E.ANY..{proxy+}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiproxyANYApiPermissionTestApiStackEventsApiBA7F1B0EANYproxy8FE48738"
+          }
+        ],
+        "/ApiStack/EventsApi/Default/{proxy+}/ANY/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiproxyANYB6D13F75"
+          }
+        ],
+        "/ApiStack/EventsApi/Default/ANY/ApiPermission.ApiStackEventsApiBA7F1B0E.ANY..": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiANYApiPermissionApiStackEventsApiBA7F1B0EANY36988DD7"
+          }
+        ],
+        "/ApiStack/EventsApi/Default/ANY/ApiPermission.Test.ApiStackEventsApiBA7F1B0E.ANY..": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiANYApiPermissionTestApiStackEventsApiBA7F1B0EANY1BFE1090"
+          }
+        ],
+        "/ApiStack/EventsApi/Default/ANY/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventsApiANYAAB01491"
+          }
+        ],
+        "/ApiStack/ApiUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiUrl"
+          }
+        ],
+        "/ApiStack/TableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TableName"
+          }
+        ],
+        "/ApiStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/ApiStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/ApiStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ApiStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "ApiStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

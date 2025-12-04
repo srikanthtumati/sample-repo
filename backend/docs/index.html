@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events API Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #7f8c8d;
+        }
+        .endpoint {
+            background: #ecf0f1;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .method {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 3px;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        .get { background: #61affe; color: white; }
+        .post { background: #49cc90; color: white; }
+        .put { background: #fca130; color: white; }
+        .delete { background: #f93e3e; color: white; }
+        code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .property {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .property-name {
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .required {
+            color: #e74c3c;
+            font-size: 12px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #3498db;
+            color: white;
+        }
+        tr:hover {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Events API Documentation</h1>
+        <p>A RESTful API for managing events with full CRUD operations, built with FastAPI and deployed on AWS Lambda.</p>
+
+        <h2>Base URL</h2>
+        <pre>https://YOUR-API-GATEWAY-URL/prod</pre>
+
+        <h2>Event Model</h2>
+        <p>All events contain the following properties:</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Type</th>
+                    <th>Required</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>eventId</code></td>
+                    <td>string</td>
+                    <td>Auto-generated</td>
+                    <td>Unique identifier for the event</td>
+                </tr>
+                <tr>
+                    <td><code>title</code></td>
+                    <td>string</td>
+                    <td>✓</td>
+                    <td>Event title (1-200 characters)</td>
+                </tr>
+                <tr>
+                    <td><code>description</code></td>
+                    <td>string</td>
+                    <td>✓</td>
+                    <td>Event description (1-2000 characters)</td>
+                </tr>
+                <tr>
+                    <td><code>date</code></td>
+                    <td>string</td>
+                    <td>✓</td>
+                    <td>Event date in ISO format (YYYY-MM-DD)</td>
+                </tr>
+                <tr>
+                    <td><code>location</code></td>
+                    <td>string</td>
+                    <td>✓</td>
+                    <td>Event location (1-500 characters)</td>
+                </tr>
+                <tr>
+                    <td><code>capacity</code></td>
+                    <td>integer</td>
+                    <td>✓</td>
+                    <td>Maximum number of attendees (must be > 0)</td>
+                </tr>
+                <tr>
+                    <td><code>organizer</code></td>
+                    <td>string</td>
+                    <td>✓</td>
+                    <td>Event organizer name (1-200 characters)</td>
+                </tr>
+                <tr>
+                    <td><code>status</code></td>
+                    <td>string</td>
+                    <td>✓</td>
+                    <td>Event status: active, scheduled, ongoing, completed, cancelled</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>API Endpoints</h2>
+
+        <div class="endpoint">
+            <h3><span class="method get">GET</span> /events</h3>
+            <p><strong>Description:</strong> List all events with optional status filtering</p>
+            <p><strong>Query Parameters:</strong></p>
+            <ul>
+                <li><code>status</code> (optional): Filter events by status (e.g., active, scheduled)</li>
+            </ul>
+            <p><strong>Response:</strong> 200 OK</p>
+            <pre>{
+  "events": [
+    {
+      "eventId": "123e4567-e89b-12d3-a456-426614174000",
+      "title": "Tech Conference 2024",
+      "description": "Annual technology conference",
+      "date": "2024-12-15",
+      "location": "San Francisco, CA",
+      "capacity": 500,
+      "organizer": "Tech Corp",
+      "status": "active",
+      "createdAt": "2024-12-03T10:00:00",
+      "updatedAt": "2024-12-03T10:00:00"
+    }
+  ],
+  "count": 1
+}</pre>
+        </div>
+
+        <div class="endpoint">
+            <h3><span class="method post">POST</span> /events</h3>
+            <p><strong>Description:</strong> Create a new event</p>
+            <p><strong>Request Body:</strong></p>
+            <pre>{
+  "eventId": "optional-custom-id",
+  "title": "Tech Conference 2024",
+  "description": "Annual technology conference",
+  "date": "2024-12-15",
+  "location": "San Francisco, CA",
+  "capacity": 500,
+  "organizer": "Tech Corp",
+  "status": "active"
+}</pre>
+            <p><strong>Response:</strong> 201 Created</p>
+            <pre>{
+  "eventId": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "Tech Conference 2024",
+  "description": "Annual technology conference",
+  "date": "2024-12-15",
+  "location": "San Francisco, CA",
+  "capacity": 500,
+  "organizer": "Tech Corp",
+  "status": "active",
+  "createdAt": "2024-12-03T10:00:00",
+  "updatedAt": "2024-12-03T10:00:00"
+}</pre>
+        </div>
+
+        <div class="endpoint">
+            <h3><span class="method get">GET</span> /events/{eventId}</h3>
+            <p><strong>Description:</strong> Get a specific event by ID</p>
+            <p><strong>Path Parameters:</strong></p>
+            <ul>
+                <li><code>eventId</code>: The unique identifier of the event</li>
+            </ul>
+            <p><strong>Response:</strong> 200 OK</p>
+            <pre>{
+  "eventId": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "Tech Conference 2024",
+  "description": "Annual technology conference",
+  "date": "2024-12-15",
+  "location": "San Francisco, CA",
+  "capacity": 500,
+  "organizer": "Tech Corp",
+  "status": "active",
+  "createdAt": "2024-12-03T10:00:00",
+  "updatedAt": "2024-12-03T10:00:00"
+}</pre>
+            <p><strong>Error Response:</strong> 404 Not Found</p>
+            <pre>{
+  "detail": "Event with ID {eventId} not found"
+}</pre>
+        </div>
+
+        <div class="endpoint">
+            <h3><span class="method put">PUT</span> /events/{eventId}</h3>
+            <p><strong>Description:</strong> Update an existing event</p>
+            <p><strong>Path Parameters:</strong></p>
+            <ul>
+                <li><code>eventId</code>: The unique identifier of the event</li>
+            </ul>
+            <p><strong>Request Body:</strong> (all fields optional)</p>
+            <pre>{
+  "title": "Updated Event Title",
+  "capacity": 600
+}</pre>
+            <p><strong>Response:</strong> 200 OK</p>
+            <pre>{
+  "eventId": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "Updated Event Title",
+  "description": "Annual technology conference",
+  "date": "2024-12-15",
+  "location": "San Francisco, CA",
+  "capacity": 600,
+  "organizer": "Tech Corp",
+  "status": "active",
+  "createdAt": "2024-12-03T10:00:00",
+  "updatedAt": "2024-12-03T15:30:00"
+}</pre>
+        </div>
+
+        <div class="endpoint">
+            <h3><span class="method delete">DELETE</span> /events/{eventId}</h3>
+            <p><strong>Description:</strong> Delete an event</p>
+            <p><strong>Path Parameters:</strong></p>
+            <ul>
+                <li><code>eventId</code>: The unique identifier of the event</li>
+            </ul>
+            <p><strong>Response:</strong> 200 OK</p>
+            <pre>{
+  "message": "Event deleted successfully"
+}</pre>
+            <p><strong>Error Response:</strong> 404 Not Found</p>
+            <pre>{
+  "detail": "Event with ID {eventId} not found"
+}</pre>
+        </div>
+
+        <h2>Error Handling</h2>
+        <p>The API uses standard HTTP status codes:</p>
+        <ul>
+            <li><strong>200 OK:</strong> Request successful</li>
+            <li><strong>201 Created:</strong> Resource created successfully</li>
+            <li><strong>400 Bad Request:</strong> Invalid input or validation error</li>
+            <li><strong>404 Not Found:</strong> Resource not found</li>
+            <li><strong>500 Internal Server Error:</strong> Server error</li>
+        </ul>
+
+        <h2>CORS</h2>
+        <p>CORS is enabled for all origins with the following configuration:</p>
+        <ul>
+            <li>Allowed Origins: * (all)</li>
+            <li>Allowed Methods: GET, POST, PUT, DELETE, OPTIONS</li>
+            <li>Allowed Headers: * (all)</li>
+            <li>Credentials: Supported</li>
+        </ul>
+
+        <h2>Example Usage</h2>
+        <h3>cURL Examples</h3>
+        
+        <h4>Create an Event</h4>
+        <pre>curl -X POST https://YOUR-API-URL/prod/events \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Tech Conference 2024",
+    "description": "Annual technology conference",
+    "date": "2024-12-15",
+    "location": "San Francisco, CA",
+    "capacity": 500,
+    "organizer": "Tech Corp",
+    "status": "active"
+  }'</pre>
+
+        <h4>List All Events</h4>
+        <pre>curl https://YOUR-API-URL/prod/events</pre>
+
+        <h4>Filter Events by Status</h4>
+        <pre>curl https://YOUR-API-URL/prod/events?status=active</pre>
+
+        <h4>Get Specific Event</h4>
+        <pre>curl https://YOUR-API-URL/prod/events/EVENT-ID</pre>
+
+        <h4>Update Event</h4>
+        <pre>curl -X PUT https://YOUR-API-URL/prod/events/EVENT-ID \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Updated Event Title",
+    "capacity": 600
+  }'</pre>
+
+        <h4>Delete Event</h4>
+        <pre>curl -X DELETE https://YOUR-API-URL/prod/events/EVENT-ID</pre>
+
+        <h2>Architecture</h2>
+        <ul>
+            <li><strong>API Gateway:</strong> REST API with CORS support</li>
+            <li><strong>Lambda:</strong> Python 3.11 runtime with FastAPI and Mangum</li>
+            <li><strong>DynamoDB:</strong> NoSQL database with pay-per-request billing</li>
+            <li><strong>CDK:</strong> Infrastructure as Code for deployment</li>
+        </ul>
+
+        <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #7f8c8d;">
+            <p>Generated for Events API v1.0.0</p>
+        </footer>
+    </div>
+</body>
+</html>
