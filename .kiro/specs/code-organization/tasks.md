@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. Create directory structure and common modules
+- [-] 1. Create directory structure and common modules
   - Create domain directories: `backend/events/`, `backend/users/`, `backend/registrations/`, `backend/common/`
   - Create `__init__.py` files in each directory
   - Create `backend/common/exceptions.py` with shared exception classes (ValidationError, DuplicateError, NotFoundError, CapacityError)
