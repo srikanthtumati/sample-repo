@@ -14,6 +14,10 @@ This document specifies the requirements for a user registration system that ena
 - **Waitlist**: An ordered queue of Users waiting for availability when an Event reaches capacity
 - **Active Registration**: A confirmed registration that counts toward Event capacity
 - **Waitlist Entry**: A pending registration placed in the waitlist queue
+- **System Administrator**: A role with permissions to create and manage User records
+- **Event Organizer**: A role with permissions to create and configure Events
+- **Validation Error**: An error returned when input data fails to meet required format or constraint rules
+- **Error**: A general failure response returned when an operation cannot be completed
 
 ## Requirements
 
@@ -26,8 +30,8 @@ This document specifies the requirements for a user registration system that ena
 1. WHEN a user creation request is received with userId and name, THE User Registration System SHALL create a new User record
 2. WHEN a user creation request contains a duplicate userId, THE User Registration System SHALL reject the request and return an error
 3. WHEN a user creation request is missing required fields, THE User Registration System SHALL reject the request and return a validation error
-4. THE User Registration System SHALL store the userId as a unique identifier for each User
-5. THE User Registration System SHALL store the name as a string attribute for each User
+4. WHEN a User record is created, THE User Registration System SHALL store the userId as a unique identifier for that User
+5. WHEN a User record is created, THE User Registration System SHALL store the name as a string attribute for that User
 
 ### Requirement 2
 
@@ -38,7 +42,7 @@ This document specifies the requirements for a user registration system that ena
 1. WHEN an event creation request is received with a capacity value, THE User Registration System SHALL create an Event with the specified capacity constraint
 2. WHEN an event is created with waitlist enabled, THE User Registration System SHALL initialize an empty waitlist for that Event
 3. WHEN an event is created without waitlist enabled, THE User Registration System SHALL create the Event without waitlist capability
-4. THE User Registration System SHALL enforce that capacity is a positive integer value
+4. WHEN an event creation request is received, THE User Registration System SHALL enforce that capacity is a positive integer value
 5. WHEN an event creation request contains invalid capacity, THE User Registration System SHALL reject the request and return a validation error
 
 ### Requirement 3
@@ -75,4 +79,4 @@ This document specifies the requirements for a user registration system that ena
 2. WHEN a User requests their registration list, THE User Registration System SHALL exclude Events where the User only has a Waitlist Entry
 3. WHEN a User with no registrations requests their registration list, THE User Registration System SHALL return an empty list
 4. WHEN a User requests their registration list, THE User Registration System SHALL include Event details for each registered Event
-5. THE User Registration System SHALL return the registration list in a consistent order
+5. WHEN a User requests their registration list, THE User Registration System SHALL return the list in a consistent order
