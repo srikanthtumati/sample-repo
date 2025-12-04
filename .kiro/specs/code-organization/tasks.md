@@ -1,18 +1,18 @@
 # Implementation Plan
 
-- [-] 1. Create directory structure and common modules
+- [x] 1. Create directory structure and common modules
   - Create domain directories: `backend/events/`, `backend/users/`, `backend/registrations/`, `backend/common/`
   - Create `__init__.py` files in each directory
   - Create `backend/common/exceptions.py` with shared exception classes (ValidationError, DuplicateError, NotFoundError, CapacityError)
   - _Requirements: 3.1, 3.3, 6.2_
 
 - [ ] 2. Extract and organize event domain
-  - [ ] 2.1 Create event models module
+  - [x] 2.1 Create event models module
     - Move Event and EventUpdate Pydantic models to `backend/events/models.py`
     - Include all validators for status and date fields
     - _Requirements: 3.1, 3.3, 6.1_
 
-  - [ ] 2.2 Implement event repository
+  - [-] 2.2 Implement event repository
     - Create `backend/events/repository.py` with EventRepository class
     - Implement methods: create, find_by_id, find_all, update, delete, exists
     - Extract all DynamoDB operations from main.py handlers
