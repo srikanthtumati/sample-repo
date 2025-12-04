@@ -21,7 +21,7 @@ This document specifies the requirements for a user registration system that ena
 
 ## Requirements
 
-### Requirement 1
+### Requirement 1: User Creation
 
 **User Story:** As a system administrator, I want to create users with basic information, so that individuals can be identified and tracked within the system.
 
