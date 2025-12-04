@@ -69,14 +69,14 @@
     - Update imports to use common exceptions and registration models
     - _Requirements: 1.3, 5.2, 7.1, 7.4_
 
-  - [-] 4.4 Create registration handlers
+  - [x] 4.4 Create registration handlers
     - Create `backend/registrations/handlers.py` with FastAPI router
     - Implement endpoints: POST /events/{event_id}/registrations, GET /events/{event_id}/registrations, DELETE /events/{event_id}/registrations/{user_id}, GET /users/{user_id}/registrations
     - Use dependency injection for RegistrationService
     - Translate service exceptions to HTTP responses
     - _Requirements: 1.1, 1.2, 4.1, 4.2_
 
-- [ ] 5. Create configuration and dependency injection
+- [-] 5. Create configuration and dependency injection
   - Create `backend/config.py` with dependency injection functions
   - Implement get_user_repository, get_registration_repository, get_event_repository
   - Implement get_user_service, get_event_service, get_registration_service
