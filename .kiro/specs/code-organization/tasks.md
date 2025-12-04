@@ -12,19 +12,19 @@
     - Include all validators for status and date fields
     - _Requirements: 3.1, 3.3, 6.1_
 
-  - [-] 2.2 Implement event repository
+  - [x] 2.2 Implement event repository
     - Create `backend/events/repository.py` with EventRepository class
     - Implement methods: create, find_by_id, find_all, update, delete, exists
     - Extract all DynamoDB operations from main.py handlers
     - _Requirements: 2.1, 2.2, 2.3, 7.2_
 
-  - [ ] 2.3 Implement event service
+  - [x] 2.3 Implement event service
     - Create `backend/events/service.py` with EventService class
     - Implement business logic methods: create_event, get_event, list_events, update_event, delete_event
     - Extract business logic from main.py handlers
     - _Requirements: 1.3, 7.1_
 
-  - [ ] 2.4 Create event handlers
+  - [x] 2.4 Create event handlers
     - Create `backend/events/handlers.py` with FastAPI router
     - Implement endpoints: POST /, GET /, GET /{event_id}, PUT /{event_id}, DELETE /{event_id}
     - Use dependency injection for EventService
@@ -32,7 +32,7 @@
     - _Requirements: 1.1, 1.2, 4.1, 4.2_
 
 - [ ] 3. Extract and organize user domain
-  - [ ] 3.1 Create user models module
+  - [x] 3.1 Create user models module
     - Move User dataclass and create UserCreate Pydantic model to `backend/users/models.py`
     - _Requirements: 3.1, 3.3, 6.1_
 
