@@ -33,7 +33,7 @@ This document specifies the requirements for a user registration system that ena
 4. WHEN a User record is created, THE User Registration System SHALL store the userId as a unique identifier for that User
 5. WHEN a User record is created, THE User Registration System SHALL store the name as a string attribute for that User
 
-### Requirement 2
+### Requirement 2: Event Configuration
 
 **User Story:** As an event organizer, I want to configure events with capacity constraints and optional waitlists, so that I can control attendance and manage overflow demand.
 
@@ -45,7 +45,7 @@ This document specifies the requirements for a user registration system that ena
 4. WHEN an event creation request is received, THE User Registration System SHALL enforce that capacity is a positive integer value
 5. WHEN an event creation request contains invalid capacity, THE User Registration System SHALL reject the request and return a validation error
 
-### Requirement 3
+### Requirement 3: Event Registration
 
 **User Story:** As a user, I want to register for events, so that I can participate in activities I'm interested in.
 
@@ -57,7 +57,7 @@ This document specifies the requirements for a user registration system that ena
 4. WHEN a User who is already registered attempts to register again for the same Event, THE User Registration System SHALL reject the duplicate registration request
 5. WHEN a User requests registration for a non-existent Event, THE User Registration System SHALL return an error
 
-### Requirement 4
+### Requirement 4: Event Unregistration
 
 **User Story:** As a user, I want to unregister from events, so that I can free up my spot if I can no longer attend.
 
@@ -69,7 +69,7 @@ This document specifies the requirements for a user registration system that ena
 4. WHEN a User requests to unregister from an Event they are not registered for, THE User Registration System SHALL return an error
 5. WHEN a User is promoted from waitlist to Active Registration, THE User Registration System SHALL maintain the order of remaining waitlist entries
 
-### Requirement 5
+### Requirement 5: Registration List Retrieval
 
 **User Story:** As a user, I want to list all events I am registered for, so that I can track my commitments and participation.
 
