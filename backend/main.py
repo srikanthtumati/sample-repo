@@ -9,6 +9,14 @@ import boto3
 from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
 
+# Import registration system components
+from models import User as UserModel
+from repositories import UserRepository, RegistrationRepository
+from services import (
+    UserService, RegistrationService,
+    ValidationError, DuplicateError, NotFoundError, CapacityError
+)
+
 app = FastAPI(title="Events API", version="1.0.0")
 
 # CORS configuration
@@ -25,6 +33,12 @@ dynamodb = boto3.resource('dynamodb')
 table_name = os.environ.get('EVENTS_TABLE_NAME', 'Events')
 table = dynamodb.Table(table_name)
 
+# Initialize registration system
+user_repo = UserRepository()
+registration_repo = RegistrationRepository()
+user_service = UserService(user_repo)
+registration_service = RegistrationService(registration_repo, user_repo, table)
+
 
 class Event(BaseModel):
     eventId: Optional[str] = None
@@ -35,6 +49,7 @@ class Event(BaseModel):
     capacity: int = Field(..., gt=0, description="Must be greater than 0")
     organizer: str = Field(..., min_length=1, max_length=200)
     status: str = Field(..., description="Event status")
+    waitlistEnabled: Optional[bool] = False
 
     @validator('status')
     def validate_status(cls, v):
@@ -60,6 +75,7 @@ class EventUpdate(BaseModel):
     capacity: Optional[int] = Field(None, gt=0)
     organizer: Optional[str] = Field(None, min_length=1, max_length=200)
     status: Optional[str] = None
+    waitlistEnabled: Optional[bool] = None
 
     @validator('status')
     def validate_status(cls, v):
@@ -77,6 +93,15 @@ class EventUpdate(BaseModel):
             except ValueError:
                 raise ValueError('Date must be in ISO format (YYYY-MM-DD)')
         return v
+
+
+class User(BaseModel):
+    userId: str = Field(..., min_length=1)
+    name: str = Field(..., min_length=1)
+
+
+class RegistrationRequest(BaseModel):
+    userId: str = Field(..., min_length=1)
 
 
 @app.get("/")
@@ -223,6 +248,113 @@ async def delete_event(event_id: str):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to delete event: {str(e)}"
         )
+
+
+# User endpoints
+@app.post("/users", status_code=status.HTTP_201_CREATED)
+async def create_user(user: User):
+    """Create a new user"""
+    try:
+        created_user = user_service.create_user(user.userId, user.name)
+        return {
+            "userId": created_user.user_id,
+            "name": created_user.name
+        }
+    except ValidationError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+    except DuplicateError as e:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(e)
+        )
+
+
+@app.get("/users/{user_id}")
+async def get_user(user_id: str):
+    """Get a user by ID"""
+    user = user_service.get_user(user_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User {user_id} not found"
+        )
+    return {
+        "userId": user.user_id,
+        "name": user.name
+    }
+
+
+# Registration endpoints
+@app.post("/events/{event_id}/registrations", status_code=status.HTTP_201_CREATED)
+async def register_for_event(event_id: str, request: RegistrationRequest):
+    """Register a user for an event"""
+    try:
+        registration = registration_service.register_user(request.userId, event_id)
+        result = {
+            "registrationId": registration.registration_id,
+            "userId": registration.user_id,
+            "eventId": registration.event_id,
+            "status": registration.status.value
+        }
+        if registration.waitlist_position is not None:
+            result["waitlistPosition"] = registration.waitlist_position
+        return result
+    except ValidationError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+    except NotFoundError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+        )
+    except DuplicateError as e:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(e)
+        )
+    except CapacityError as e:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(e)
+        )
+
+
+@app.get("/events/{event_id}/registrations")
+async def get_event_registrations(event_id: str):
+    """Get all registrations for an event"""
+    registrations = registration_service.get_event_registrations(event_id)
+    return {
+        "registrations": registrations,
+        "count": len(registrations)
+    }
+
+
+@app.delete("/events/{event_id}/registrations/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def unregister_from_event(event_id: str, user_id: str):
+    """Unregister a user from an event"""
+    try:
+        registration_service.unregister_user(user_id, event_id)
+        return None
+    except NotFoundError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+        )
+
+
+@app.get("/users/{user_id}/registrations")
+async def get_user_registrations(user_id: str):
+    """Get all active registrations for a user"""
+    events = registration_service.get_user_registrations(user_id)
+    return {
+        "events": events,
+        "count": len(events)
+    }
 
 
 # Lambda handler
