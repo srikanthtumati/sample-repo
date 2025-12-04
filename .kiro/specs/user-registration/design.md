@@ -243,3 +243,193 @@ When an ACTIVE registration is removed:
 3. Update status to ACTIVE and clear waitlist_position
 4. Decrement waitlist_position for all remaining entries
 
+
+## Correctness Properties
+
+*A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+
+### Property 1: User creation stores all fields correctly
+*For any* valid userId and name, creating a user should result in a User record that can be retrieved with the same userId and name values.
+**Validates: Requirements 1.1, 1.4, 1.5**
+
+### Property 2: Invalid user input is rejected
+*For any* user creation request with empty or whitespace-only userId or name, the system should reject the request with a validation error.
+**Validates: Requirements 1.3**
+
+### Property 3: Event creation stores capacity correctly
+*For any* valid event parameters including a positive capacity value, creating an event should result in an Event record with the specified capacity constraint.
+**Validates: Requirements 2.1**
+
+### Property 4: Events with waitlist start empty
+*For any* event created with waitlist enabled, querying the waitlist immediately after creation should return an empty list.
+**Validates: Requirements 2.2**
+
+### Property 5: Invalid capacity is rejected
+*For any* event creation request with zero, negative, or non-integer capacity, the system should reject the request with a validation error.
+**Validates: Requirements 2.4, 2.5**
+
+### Property 6: Registration succeeds when capacity available
+*For any* event with available capacity (active registrations < capacity) and any valid user, registration should create an ACTIVE registration.
+**Validates: Requirements 3.1**
+
+### Property 7: Waitlist registration when full
+*For any* event at full capacity with waitlist enabled, registering a new user should create a WAITLISTED registration with the correct position.
+**Validates: Requirements 3.3**
+
+### Property 8: Unregistration removes registration
+*For any* user with an active registration for an event, unregistering should result in that registration no longer existing.
+**Validates: Requirements 4.1**
+
+### Property 9: Waitlist promotion on unregistration
+*For any* event with active registrations at capacity and a non-empty waitlist, when an active user unregisters, the first waitlisted user should be promoted to ACTIVE status.
+**Validates: Requirements 4.2**
+
+### Property 10: Waitlist unregistration removes entry
+*For any* user with a waitlisted registration, unregistering should remove that user from the waitlist.
+**Validates: Requirements 4.3**
+
+### Property 11: Waitlist order preserved after promotion
+*For any* event with multiple waitlisted users, after promoting the first user to active, the remaining users should maintain their relative order with decremented positions.
+**Validates: Requirements 4.5**
+
+### Property 12: Registration list contains only active registrations
+*For any* user, the registration list should include all and only events where the user has an ACTIVE registration, excluding any waitlisted events.
+**Validates: Requirements 5.1, 5.2**
+
+### Property 13: Registration list includes event details
+*For any* user with active registrations, each event in the registration list should contain complete event details (event_id, name, capacity, has_waitlist).
+**Validates: Requirements 5.4**
+
+### Property 14: Registration list order is consistent
+*For any* user, calling get_user_registrations multiple times without modifications should return events in the same order.
+**Validates: Requirements 5.5**
+
+## Error Handling
+
+The system defines specific error types for different failure scenarios:
+
+### Error Types
+
+1. **ValidationError**: Raised when input data fails validation rules
+   - Empty or whitespace-only required fields
+   - Invalid capacity values (zero, negative, non-integer)
+   - Malformed identifiers
+
+2. **DuplicateError**: Raised when attempting to create a resource that already exists
+   - Duplicate userId
+   - Duplicate event_id
+   - Duplicate registration (user already registered for event)
+
+3. **NotFoundError**: Raised when referencing non-existent resources
+   - User not found
+   - Event not found
+   - Registration not found
+
+4. **CapacityError**: Raised when registration cannot be completed due to capacity constraints
+   - Event at full capacity with no waitlist
+
+### Error Handling Strategy
+
+- All service methods validate inputs before processing
+- Repository methods assume valid inputs (validation at service layer)
+- Errors include descriptive messages for debugging
+- API layer translates errors to appropriate HTTP status codes:
+  - ValidationError → 400 Bad Request
+  - DuplicateError → 409 Conflict
+  - NotFoundError → 404 Not Found
+  - CapacityError → 409 Conflict
+
+## Testing Strategy
+
+The system will employ a dual testing approach combining unit tests and property-based tests to ensure comprehensive coverage and correctness.
+
+### Property-Based Testing
+
+Property-based testing will be implemented using **Hypothesis** for Python. This approach verifies that universal properties hold across a wide range of randomly generated inputs.
+
+**Configuration:**
+- Each property-based test will run a minimum of 100 iterations
+- Tests will use Hypothesis strategies to generate valid and invalid inputs
+- Each property-based test will be tagged with a comment referencing the specific correctness property from this design document
+- Tag format: `# Feature: user-registration, Property {number}: {property_text}`
+
+**Property Test Coverage:**
+- Property 1: User creation round-trip (create and retrieve)
+- Property 2: Invalid user input rejection
+- Property 3: Event creation with capacity
+- Property 4: Empty waitlist initialization
+- Property 5: Invalid capacity rejection
+- Property 6: Registration with available capacity
+- Property 7: Waitlist registration when full
+- Property 8: Unregistration removes registration
+- Property 9: Waitlist promotion on unregistration
+- Property 10: Waitlist unregistration
+- Property 11: Waitlist order preservation
+- Property 12: Active-only registration list
+- Property 13: Registration list event details
+- Property 14: Registration list consistency
+
+### Unit Testing
+
+Unit tests will verify specific examples, edge cases, and integration points:
+
+**User Service Tests:**
+- Creating users with valid data
+- Duplicate userId rejection
+- Empty field validation
+
+**Event Service Tests:**
+- Creating events with various capacity values
+- Waitlist enabled/disabled configurations
+- Boundary capacity values (1, large numbers)
+
+**Registration Service Tests:**
+- Registration flow with available capacity
+- Full event without waitlist (denial)
+- Full event with waitlist (waitlist addition)
+- Duplicate registration attempts
+- Unregistration with and without waitlist promotion
+- Edge case: Empty registration list
+- Edge case: Single user on waitlist
+- Edge case: Multiple users on waitlist
+
+**Repository Tests:**
+- CRUD operations for each repository
+- Query methods return correct results
+- Count and ordering operations
+
+### Test Data Strategies
+
+**Hypothesis Strategies:**
+```python
+# Generate valid user IDs (non-empty strings)
+user_ids = st.text(min_size=1).filter(lambda s: s.strip())
+
+# Generate valid names
+names = st.text(min_size=1).filter(lambda s: s.strip())
+
+# Generate valid capacities
+capacities = st.integers(min_value=1, max_value=1000)
+
+# Generate invalid capacities
+invalid_capacities = st.integers(max_value=0)
+
+# Generate waitlist flags
+waitlist_flags = st.booleans()
+```
+
+### Testing Workflow
+
+1. **Implementation-first approach**: Implement features before writing corresponding tests
+2. **Property tests alongside implementation**: Write property-based tests as each component is completed
+3. **Unit tests for edge cases**: Add unit tests for specific scenarios and boundary conditions
+4. **Integration validation**: Ensure all components work together correctly
+5. **Continuous validation**: Run all tests after each change to catch regressions early
+
+### Success Criteria
+
+- All property-based tests pass with 100+ iterations
+- All unit tests pass
+- Code coverage > 90% for service and repository layers
+- No unhandled error cases
+- All acceptance criteria validated by at least one test
