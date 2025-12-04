@@ -36,17 +36,17 @@
     - Move User dataclass and create UserCreate Pydantic model to `backend/users/models.py`
     - _Requirements: 3.1, 3.3, 6.1_
 
-  - [ ] 3.2 Move user repository
+  - [x] 3.2 Move user repository
     - Move UserRepository class to `backend/users/repository.py`
     - Update imports to use common exceptions
     - _Requirements: 2.1, 7.2_
 
-  - [ ] 3.3 Move user service
+  - [x] 3.3 Move user service
     - Move UserService class to `backend/users/service.py`
     - Update imports to use common exceptions and user models
     - _Requirements: 1.3, 7.1_
 
-  - [ ] 3.4 Create user handlers
+  - [-] 3.4 Create user handlers
     - Create `backend/users/handlers.py` with FastAPI router
     - Implement endpoints: POST /, GET /{user_id}
     - Use dependency injection for UserService
