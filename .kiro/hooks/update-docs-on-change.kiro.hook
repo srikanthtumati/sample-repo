@@ -1,0 +1,13 @@
+{
+  "name": "Update Docs on Source Change",
+  "description": "Automatically updates documentation when source code files are modified",
+  "trigger": {
+    "type": "onFileSave",
+    "filePattern": "**/*.{py,js,ts,tsx,jsx}"
+  },
+  "action": {
+    "type": "sendMessage",
+    "message": "A source file was just saved: {{filePath}}. Please review the changes and update any relevant documentation files (README.md, API docs, or inline documentation) to reflect the modifications. Focus on:\n1. Updating function/class descriptions if signatures changed\n2. Adding examples if new features were added\n3. Updating API endpoint documentation if routes changed\n4. Keeping documentation accurate and concise"
+  },
+  "enabled": true
+}
