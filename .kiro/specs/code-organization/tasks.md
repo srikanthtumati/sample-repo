@@ -76,7 +76,7 @@
     - Translate service exceptions to HTTP responses
     - _Requirements: 1.1, 1.2, 4.1, 4.2_
 
-- [-] 5. Create configuration and dependency injection
+- [x] 5. Create configuration and dependency injection
   - Create `backend/config.py` with dependency injection functions
   - Implement get_user_repository, get_registration_repository, get_event_repository
   - Implement get_user_service, get_event_service, get_registration_service
@@ -84,7 +84,7 @@
   - Use singleton pattern for repository instances
   - _Requirements: 5.1, 5.2, 5.3, 8.4_
 
-- [ ] 6. Refactor main application file
+- [-] 6. Refactor main application file
   - Update `backend/main.py` to only contain FastAPI app setup, CORS middleware, and router registration
   - Import routers from events.handlers, users.handlers, registrations.handlers
   - Register all routers with app.include_router()

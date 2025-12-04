@@ -1,21 +1,10 @@
-import os
-import uuid
-from datetime import datetime
-from typing import Optional
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field, validator
-import boto3
-from boto3.dynamodb.conditions import Key, Attr
-from botocore.exceptions import ClientError
+from mangum import Mangum
 
-# Import registration system components
-from models import User as UserModel
-from repositories import UserRepository, RegistrationRepository
-from services import (
-    UserService, RegistrationService,
-    ValidationError, DuplicateError, NotFoundError, CapacityError
-)
+from events.handlers import router as events_router
+from users.handlers import router as users_router
+from registrations.handlers import router as registrations_router
 
 app = FastAPI(title="Events API", version="1.0.0")
 
@@ -28,80 +17,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# DynamoDB setup
-dynamodb = boto3.resource('dynamodb')
-table_name = os.environ.get('EVENTS_TABLE_NAME', 'Events')
-table = dynamodb.Table(table_name)
-
-# Initialize registration system
-user_repo = UserRepository()
-registration_repo = RegistrationRepository()
-user_service = UserService(user_repo)
-registration_service = RegistrationService(registration_repo, user_repo, table)
-
-
-class Event(BaseModel):
-    eventId: Optional[str] = None
-    title: str = Field(..., min_length=1, max_length=200)
-    description: str = Field(..., min_length=1, max_length=2000)
-    date: str = Field(..., description="ISO format date (YYYY-MM-DD)")
-    location: str = Field(..., min_length=1, max_length=500)
-    capacity: int = Field(..., gt=0, description="Must be greater than 0")
-    organizer: str = Field(..., min_length=1, max_length=200)
-    status: str = Field(..., description="Event status")
-    waitlistEnabled: Optional[bool] = False
-
-    @validator('status')
-    def validate_status(cls, v):
-        allowed_statuses = ['active', 'scheduled', 'ongoing', 'completed', 'cancelled']
-        if v not in allowed_statuses:
-            raise ValueError(f'Status must be one of: {", ".join(allowed_statuses)}')
-        return v
-
-    @validator('date')
-    def validate_date(cls, v):
-        try:
-            datetime.fromisoformat(v)
-        except ValueError:
-            raise ValueError('Date must be in ISO format (YYYY-MM-DD)')
-        return v
-
-
-class EventUpdate(BaseModel):
-    title: Optional[str] = Field(None, min_length=1, max_length=200)
-    description: Optional[str] = Field(None, min_length=1, max_length=2000)
-    date: Optional[str] = None
-    location: Optional[str] = Field(None, min_length=1, max_length=500)
-    capacity: Optional[int] = Field(None, gt=0)
-    organizer: Optional[str] = Field(None, min_length=1, max_length=200)
-    status: Optional[str] = None
-    waitlistEnabled: Optional[bool] = None
-
-    @validator('status')
-    def validate_status(cls, v):
-        if v is not None:
-            allowed_statuses = ['active', 'scheduled', 'ongoing', 'completed', 'cancelled']
-            if v not in allowed_statuses:
-                raise ValueError(f'Status must be one of: {", ".join(allowed_statuses)}')
-        return v
-
-    @validator('date')
-    def validate_date(cls, v):
-        if v is not None:
-            try:
-                datetime.fromisoformat(v)
-            except ValueError:
-                raise ValueError('Date must be in ISO format (YYYY-MM-DD)')
-        return v
-
-
-class User(BaseModel):
-    userId: str = Field(..., min_length=1)
-    name: str = Field(..., min_length=1)
-
-
-class RegistrationRequest(BaseModel):
-    userId: str = Field(..., min_length=1)
+# Register routers
+app.include_router(events_router)
+app.include_router(users_router)
+app.include_router(registrations_router)
 
 
 @app.get("/")
