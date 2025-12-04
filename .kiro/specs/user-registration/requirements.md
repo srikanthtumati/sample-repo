@@ -12,8 +12,8 @@ This document specifies the requirements for a user registration system that ena
 - **Registration**: The association between a User and an Event indicating the User's participation
 - **Capacity**: The maximum number of Users that can be registered for an Event
 - **Waitlist**: An ordered queue of Users waiting for availability when an Event reaches capacity
-- **Active Registration**: A confirmed registration that counts toward Event capacity
-- **Waitlist Entry**: A pending registration placed in the waitlist queue
+- **Active Registration**: A confirmed registration that counts toward Event capacity and grants the User participation rights
+- **Waitlist Entry**: A pending registration placed in the waitlist queue when an Event is at full capacity
 - **System Administrator**: A role with permissions to create and manage User records
 - **Event Organizer**: A role with permissions to create and configure Events
 - **Validation Error**: An error returned when input data fails to meet required format or constraint rules

@@ -243,7 +243,6 @@ When an ACTIVE registration is removed:
 3. Update status to ACTIVE and clear waitlist_position
 4. Decrement waitlist_position for all remaining entries
 
-
 ## Correctness Properties
 
 *A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
