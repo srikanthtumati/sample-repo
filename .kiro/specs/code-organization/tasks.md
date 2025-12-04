@@ -6,7 +6,7 @@
   - Create `backend/common/exceptions.py` with shared exception classes (ValidationError, DuplicateError, NotFoundError, CapacityError)
   - _Requirements: 3.1, 3.3, 6.2_
 
-- [ ] 2. Extract and organize event domain
+- [x] 2. Extract and organize event domain
   - [x] 2.1 Create event models module
     - Move Event and EventUpdate Pydantic models to `backend/events/models.py`
     - Include all validators for status and date fields
@@ -31,7 +31,7 @@
     - Translate service exceptions to HTTP responses
     - _Requirements: 1.1, 1.2, 4.1, 4.2_
 
-- [ ] 3. Extract and organize user domain
+- [x] 3. Extract and organize user domain
   - [x] 3.1 Create user models module
     - Move User dataclass and create UserCreate Pydantic model to `backend/users/models.py`
     - _Requirements: 3.1, 3.3, 6.1_
@@ -53,7 +53,7 @@
     - Translate service exceptions to HTTP responses
     - _Requirements: 1.1, 1.2, 4.1, 4.2_
 
-- [ ] 4. Extract and organize registration domain
+- [x] 4. Extract and organize registration domain
   - [x] 4.1 Create registration models module
     - Move Registration dataclass, RegistrationStatus enum, and RegistrationRequest to `backend/registrations/models.py`
     - _Requirements: 3.1, 3.3, 6.1_
@@ -84,7 +84,7 @@
   - Use singleton pattern for repository instances
   - _Requirements: 5.1, 5.2, 5.3, 8.4_
 
-- [-] 6. Refactor main application file
+- [x] 6. Refactor main application file
   - Update `backend/main.py` to only contain FastAPI app setup, CORS middleware, and router registration
   - Import routers from events.handlers, users.handlers, registrations.handlers
   - Register all routers with app.include_router()
@@ -93,7 +93,7 @@
   - Ensure file is under 200 lines
   - _Requirements: 8.1, 8.2, 8.3, 8.5_
 
-- [ ] 7. Checkpoint - Verify refactoring preserves functionality
+- [x] 7. Checkpoint - Verify refactoring preserves functionality
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ]* 8. Write property-based tests for correctness properties
@@ -132,7 +132,7 @@
     - Verify capacity enforcement and waitlist behavior
     - Run minimum 100 iterations
 
-- [ ] 9. Clean up old files
+- [-] 9. Clean up old files
   - Remove old `backend/models.py` file
   - Remove old `backend/services.py` file
   - Remove old `backend/repositories.py` file
